@@ -1,0 +1,8 @@
+.idea
+__pycache__
+*.sqlite
+*HiddenSettings*
+*.pyc
+*/Persistence/*.txt
+*Ui.py
+Data
