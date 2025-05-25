@@ -356,8 +356,10 @@ def onSettingsClicked():
                 settingsPerApp.setDataFolder(settingsDialog.getDataFolder())
                 break
             except ValueError:
-                QMessageBox.critical(mw, messageBoxTitle, "Please set a valid data folder")
-                settingsDialog.exec()
+                QMessageBox.critical(mw, messageBoxTitle, "Data folder invalid, falling back to default.")
+                os.makedirs(defaultSettingsDirectory, exist_ok=True)
+                settingsPerApp.setDataFolder(defaultSettingsDirectory)
+                break
             except UacError:
                 QMessageBox.critical(
                     mw, messageBoxTitle, 'Subfolders in "Program Files" or "Windows" sometimes cause problems, please choose a different folder.'
