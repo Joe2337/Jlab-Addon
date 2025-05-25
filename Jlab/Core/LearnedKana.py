@@ -1,6 +1,7 @@
 # coding: utf8
 # Remark: When upgrading to Anki 2.1, the coding utf-8 and u'' unicode markers can be removed.
 from aqt.qt import *
+from aqt.theme import theme_manager
 from Core.KanaTools import *
 
 from Persistence.IStorable import *
@@ -30,8 +31,6 @@ class LearnedKana(QAbstractTableModel, IStorable):
     _wRow = 9
     _nRow = 10
 
-    _nightMode = False
-
     # non-static members:
     # _characters: 2D-list with hiragana or katakana
     # _readings: 2D-list with readings for the characters
@@ -57,7 +56,7 @@ class LearnedKana(QAbstractTableModel, IStorable):
         elif role == Qt.ItemDataRole.ToolTipRole:
             return self._roumajiTooltips[index.row()][index.column()]
         elif role == Qt.ItemDataRole.BackgroundRole:
-            if LearnedKana._nightMode:
+            if theme_manager.night_mode:
                 return QBrush(QColor(0, 200, 0)) if self._learned[index.row()][index.column()] else QBrush(QColor(150, 150, 150))
             else:
                 return QBrush(Qt.GlobalColor.green) if self._learned[index.row()][index.column()] else QBrush(Qt.GlobalColor.white)

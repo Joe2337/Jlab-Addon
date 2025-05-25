@@ -322,8 +322,6 @@ def runGC():
     except Exception as e:
         showInfo("Error: " + str(e))
 
-    LearnedKana._nightMode = mw.pm.night_mode()
-
 
 def updateAllCards():
     oldVal = noteUpdater._fastCardUpdate
