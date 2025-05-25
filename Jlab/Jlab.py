@@ -69,6 +69,8 @@ settingsPerAppFolder = os.path.dirname(os.path.dirname(__file__)) + "/"
 settingsPerAppFileName = "SettingsPerApp"
 settingsFileName = "Settings"
 
+defaultSettingsDirectory = settingsPerAppFolder + "JlabData/"
+
 hiddenSettings = HiddenSettings()
 hiddenSettingsFileName = "HiddenSettings"
 
@@ -735,7 +737,20 @@ def onCardDidRender(templateRenderOutput, RenderContext):
     addPreviewerHandlers()
 
 
+def loadDataFolderWithFallback():
+    try:
+        fileStorageEngine.load(
+            settingsPerApp, settingsPerAppFolder, settingsPerAppFileName
+        )  # loading of user data is triggered by a signal in settingsPerApp. It is done, after the user data folder is loaded.
+    except FileNotFoundError as e:
+        os.makedirs(defaultSettingsDirectory, exist_ok=True)
+        settingsPerApp.setDataFolder(defaultSettingsDirectory)
+        fileStorageEngine.save(settingsPerApp, settingsPerAppFolder, settingsPerAppFileName)
+        fileStorageEngine.load(settingsPerApp, settingsPerAppFolder, settingsPerAppFileName)
+
+
 # -----------------------------Connect everything to Anki
+
 createJapaneseMenu()
 
 settingsPerApp.folderChanged.connect(loadUserData)
@@ -757,11 +772,9 @@ Reviewer._linkHandler = wrap(Reviewer._linkHandler, linkHandlerReviewer, "around
 hooks.card_did_render.append(onCardDidRender)
 
 try:
-    fileStorageEngine.load(
-        settingsPerApp, settingsPerAppFolder, settingsPerAppFileName
-    )  # loading of user data is triggered by a signal in settingsPerApp. It is done, after the user data folder is loaded.
+    loadDataFolderWithFallback()
 except (IOError, ValueError) as e:
-    onSettingsPerAppNotFound()
+    QmessageBox.critical(mw, messageBoxTitle, "Could not load data folder: " + str(e))
 
 # in order to check for updates, run aqt.addons.check_and_prompt_for_updates
 

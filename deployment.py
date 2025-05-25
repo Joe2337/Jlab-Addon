@@ -1,3 +1,7 @@
+import sys, os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "Jlab"))
+
 from Core.CurrentVersion import CurrentVersion
 from Core.UpdateInformation import UpdateInformation
 from distutils.dir_util import copy_tree
