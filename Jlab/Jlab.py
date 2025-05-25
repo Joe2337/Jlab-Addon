@@ -529,13 +529,9 @@ def updateCurrentNote(self, a, b):
 
 
 def onLoadedCustomFolderNotExisting():
-    QMessageBox.critical(mw, messageBoxTitle, "The user defined data folder does not exist, please check your settings")
-    onSettingsClicked()
-
-
-def onSettingsPerAppNotFound():
-    QMessageBox.information(mw, messageBoxTitle, "Please specify a folder, where the plugin can store user data.")
-    onSettingsClicked()
+    QMessageBox.critical(mw, messageBoxTitle, "The jlab data folder was not found. Resetting to default...")
+    os.makedirs(defaultSettingsDirectory, exist_ok=True)
+    loadDataFolderWithFallback()
 
 
 # this currently is deprecated, as there's no stable import hook.
