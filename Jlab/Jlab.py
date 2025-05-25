@@ -444,7 +444,7 @@ def createJapaneseMenu():
     japaneseMenu.addSeparator()
 
     action = QAction("Get decks", mw)
-    action.triggered.connect(lambda: WebSearch.openUrl("http://japanesedecks.blogspot.com/"))
+    action.triggered.connect(lambda: WebSearch.openUrl("https://www.japanese-like-a-breeze.com/decks/"))
     japaneseMenu.addAction(action)
 
     action = QAction("User Manual", mw)
