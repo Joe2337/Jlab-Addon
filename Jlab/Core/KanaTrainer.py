@@ -5,7 +5,8 @@ from Core.KanaTrainerData import *
 from aqt.qt import *
 import math
 
-ordinal = lambda n: "%s" % ("tsnrhtdd"[(math.floor(n/10)%10!=1)*(n%10<4)*n%10::4])
+ordinal = lambda n: "%s" % ("tsnrhtdd"[(math.floor(n / 10) % 10 != 1) * (n % 10 < 4) * n % 10 :: 4])
+
 
 class KanaTrainer(QDialog, IStorable):
 
@@ -28,7 +29,7 @@ class KanaTrainer(QDialog, IStorable):
         self._ui.katakanaTableView.resizeRowsToContents()
         self._ui.katakanaTableView.resizeColumnsToContents()
 
-        self.resize((self._ui.hiraganaTableView.horizontalHeader().length() + 30)*2, self.height())
+        self.resize((self._ui.hiraganaTableView.horizontalHeader().length() + 30) * 2, self.height())
 
         self._ui.hiraganaTableView.doubleClicked.connect(kanaTrainerData.learnedHiragana.toggleCharacter)
         self._ui.katakanaTableView.doubleClicked.connect(kanaTrainerData.learnedKatakana.toggleCharacter)
@@ -45,7 +46,7 @@ class KanaTrainer(QDialog, IStorable):
     def updateUi(self):
         idx = self._ui.kanaTypeCombobox.findText(self._kanaTrainerData.kanaType)
         if idx == -1:
-            raise ValueError(self._kanaTrainerData.kanaType + u" Not found in combobox")
+            raise ValueError(self._kanaTrainerData.kanaType + " Not found in combobox")
         self._ui.kanaTypeCombobox.setCurrentIndex(idx)
         self._ui.oppositeKanaCheckbox.setChecked(self._kanaTrainerData.showOppositeKana)
         self._ui.oppositeKanaSpinBox.setValue(self._kanaTrainerData.oppositeKanaStepSize)
@@ -67,13 +68,13 @@ class KanaTrainer(QDialog, IStorable):
 
     def onNumberChanged(self):
         self._kanaTrainerData.oppositeKanaStepSize = self._ui.oppositeKanaSpinBox.value()
-        self._ui.label_5.setText(ordinal(self._ui.oppositeKanaSpinBox.value()) + u" card in ")
+        self._ui.label_5.setText(ordinal(self._ui.oppositeKanaSpinBox.value()) + " card in ")
 
     def onKanaTypeChanged(self):
         if self._ui.kanaTypeCombobox.count() != 2:
-            raise ValueError(u"Wrong item count in kana combobox")
+            raise ValueError("Wrong item count in kana combobox")
         self._kanaTrainerData.kanaType = self._ui.kanaTypeCombobox.currentText()
-        oppositeIndex = (self._ui.kanaTypeCombobox.currentIndex()+1) % 2
+        oppositeIndex = (self._ui.kanaTypeCombobox.currentIndex() + 1) % 2
         self._ui.oppositeKanaLabel.setText(self._ui.kanaTypeCombobox.itemText(oppositeIndex))
 
     def closeEvent(self, qCloseEvent):

@@ -1,4 +1,4 @@
-#coding: utf8
+# coding: utf8
 from Core.ClozeEditor import *
 from Core.KanaTrainer import *
 from Core.Kanjium import *
@@ -29,6 +29,7 @@ kanjium = Kanjium()
 
 kanjiKanaTransliterator = KanjiKanaTransliterator(kanjium, LearnedKanji())
 
+
 def testClozeEditor():
     app = QApplication(sys.argv)
 
@@ -39,26 +40,29 @@ def testClozeEditor():
     # lemmata = u"と が ある だ 飲み込む から"
     # selectedText = u"飲み込んで"
 
-    spacedKanji = u"なんで 今日 は こんな 起こし方 すん の"
-    hiragana = u"なんで きょう は こんな おこしかた すん の"
+    spacedKanji = "なんで 今日 は こんな 起こし方 すん の"
+    hiragana = "なんで きょう は こんな おこしかた すん の"
     hiraganaCloze = hiragana
     kanjiCloze = spacedKanji
-    lemmata = u"なんで 今日 は こんな 起こす方 する の"
-    selectedText = u"起こす"
+    lemmata = "なんで 今日 は こんな 起こす方 する の"
+    selectedText = "起こす"
 
-    japaneseTextAccess = JapaneseTextAccess(hiragana, spacedKanji, hiraganaCloze, kanjiCloze, lemmata, kanaRoumajiTransliterator, kanjiKanaTransliterator, kanjium, False)
+    japaneseTextAccess = JapaneseTextAccess(
+        hiragana, spacedKanji, hiraganaCloze, kanjiCloze, lemmata, kanaRoumajiTransliterator, kanjiKanaTransliterator, kanjium, False
+    )
     ex = ClozeEditor(japaneseTextAccess, selectedText, learnedHiragana, learnedKatakana, kanaRoumajiTransliterator, jDict, kanjium, ReadingAssistanceType.none)
     ex.resize(800, 800)
     ex.show()
     app.exec_()
-    ex = None #this explicitly deletes all objects referenced by Qt and avoids memory leaks.
-    print('\n'.join(repr(w) for w in app.allWidgets()))
+    ex = None  # this explicitly deletes all objects referenced by Qt and avoids memory leaks.
+    print("\n".join(repr(w) for w in app.allWidgets()))
+
 
 def testKanaTrainer():
     app = QtWidgets.QApplication(sys.argv)
 
     try:
-        fileStorageEngine.load(kanaTrainerData, u"C:/Tmp/", u"KanaTrainer")
+        fileStorageEngine.load(kanaTrainerData, "C:/Tmp/", "KanaTrainer")
     except:
         pass
 
@@ -66,14 +70,15 @@ def testKanaTrainer():
     result = kanaTrainer.exec()
     print(result)
     if result == 1:
-        fileStorageEngine.save(kanaTrainerData, u"C:/Tmp/", u"KanaTrainer")
+        fileStorageEngine.save(kanaTrainerData, "C:/Tmp/", "KanaTrainer")
+
 
 def testSettingsDialog():
     app = QtWidgets.QApplication(sys.argv)
 
     oldSettings = Settings()
     try:
-        fileStorageEngine.load(oldSettings, u"C:/Tmp/", u"Settings")
+        fileStorageEngine.load(oldSettings, "C:/Tmp/", "Settings")
     except:
         pass
 
@@ -82,63 +87,80 @@ def testSettingsDialog():
     print(settingsDialog.exec())
 
     newSettings = settingsDialog.getSettings()
-    print(u"card format changed: " + str(oldSettings.cardFormatChanged(newSettings)))
+    print("card format changed: " + str(oldSettings.cardFormatChanged(newSettings)))
 
-    fileStorageEngine.save(newSettings, u"C:/Tmp/", u"Settings")
+    fileStorageEngine.save(newSettings, "C:/Tmp/", "Settings")
+
 
 def testTransliteratorHiraToRouma():
     cs = TextFormatter.clozeStart
     ce = TextFormatter.clozeEnd
 
-    print(kanaRoumajiTransliterator.transliterateCard(u"ソレ ハ " + cs + u"unverhofftes Glück (ein glücklicher Zufall )" + ce, u"それ は 棚ぼた", True, True))
-    print(kanaRoumajiTransliterator.transliterateCard(u"あっ " + cs + u"to drop; to lose to leave behind" + ce + u" よ", u"あっ 落としました よ", True, True))
+    print(kanaRoumajiTransliterator.transliterateCard("ソレ ハ " + cs + "unverhofftes Glück (ein glücklicher Zufall )" + ce, "それ は 棚ぼた", True, True))
+    print(kanaRoumajiTransliterator.transliterateCard("あっ " + cs + "to drop; to lose to leave behind" + ce + " よ", "あっ 落としました よ", True, True))
 
-    cloze = cs + u"awf" + ce
-    print(kanaRoumajiTransliterator.transliterateCard(u"は " + cloze + u" は " + cloze, u"は は A は", True, True))
-    print(kanaRoumajiTransliterator.transliterateCard(u"は " + cloze + u" は " + cloze, u"は は A", True, True))
+    cloze = cs + "awf" + ce
+    print(kanaRoumajiTransliterator.transliterateCard("は " + cloze + " は " + cloze, "は は A は", True, True))
+    print(kanaRoumajiTransliterator.transliterateCard("は " + cloze + " は " + cloze, "は は A", True, True))
 
-    print(kanaRoumajiTransliterator.transliterateCard(u"でぃてーる", u"でぃてーる", True, True))
-    print(kanaRoumajiTransliterator.transliterateCard(u"は", u"は", True, True))
-    print(kanaRoumajiTransliterator.kanaToRoumaji(u"がぎぐげござじずぜぞだぢづでどばぱびぴぶぷべぺぼぽ・きゃきゅきょしゃしゅしょちゃちゅちょにゃにゅにょひゃひゅひょみゃみゅみょりゃりゅ", u"", False, True))
-    print(kanaRoumajiTransliterator.kanaToRoumaji(u"もう かのじょ と いう か お よめさん が ほしい わすれっぽい はっきり きょう　", u"A", True, True))
-    print(kanaRoumajiTransliterator.kanaToRoumaji(KanaTools.hiraToKata(u"もう かのじょ と いう か お よめさん が ほしい としごろ な ん だ よ ね"), "A", True, True))
+    print(kanaRoumajiTransliterator.transliterateCard("でぃてーる", "でぃてーる", True, True))
+    print(kanaRoumajiTransliterator.transliterateCard("は", "は", True, True))
+    print(
+        kanaRoumajiTransliterator.kanaToRoumaji(
+            "がぎぐげござじずぜぞだぢづでどばぱびぴぶぷべぺぼぽ・きゃきゅきょしゃしゅしょちゃちゅちょにゃにゅにょひゃひゅひょみゃみゅみょりゃりゅ",
+            "",
+            False,
+            True,
+        )
+    )
+    print(kanaRoumajiTransliterator.kanaToRoumaji("もう かのじょ と いう か お よめさん が ほしい わすれっぽい はっきり きょう　", "A", True, True))
+    print(
+        kanaRoumajiTransliterator.kanaToRoumaji(KanaTools.hiraToKata("もう かのじょ と いう か お よめさん が ほしい としごろ な ん だ よ ね"), "A", True, True)
+    )
+
 
 def testKanjium():
-    readings = kanjium.getReadings(u"行")
+    readings = kanjium.getReadings("行")
     for curReading in readings:
         print(curReading)
     kanjium.countReadings()
 
+
 def test_it():
-    input = u"っん"
+    input = "っん"
     roumaji = kanaRoumajiTransliterator.kanaToRoumaji(input, "", False, False)
     hiragana = kanaRoumajiTransliterator.mixedRoumajiToHiragana(roumaji)
 
     print(hiragana)
     print(input)
 
+
 def testWebsearch():
     import time
-    WebSearch.googleForGrammar(u"ます")
+
+    WebSearch.googleForGrammar("ます")
     time.sleep(2)
-    WebSearch.googleTranslate(u"パンダは腸が短くて竹からだとあまり栄養がとれないんです")
+    WebSearch.googleTranslate("パンダは腸が短くて竹からだとあまり栄養がとれないんです")
     time.sleep(2)
-    WebSearch.jgram(u"naru")
+    WebSearch.jgram("naru")
     time.sleep(2)
-    WebSearch.verbixConjugate(u"食べる")
+    WebSearch.verbixConjugate("食べる")
     time.sleep(2)
-    WebSearch.verbixDeinflect(u"tabemasu")
+    WebSearch.verbixDeinflect("tabemasu")
+
 
 def writeUpdateInfo():
     from Core.UpdateInformation import UpdateInformation
+
     u = UpdateInformation()
-    fileStorageEngine.save(u, u"C:/Tmp/", u"UpdateInformation")
+    fileStorageEngine.save(u, "C:/Tmp/", "UpdateInformation")
+
 
 def testKanjiTrainer():
     app = QtWidgets.QApplication(sys.argv)
 
     try:
-        fileStorageEngine.load(kanjiTrainerData, u"C:/Tmp/", u"KanjiTrainer")
+        fileStorageEngine.load(kanjiTrainerData, "C:/Tmp/", "KanjiTrainer")
     except:
         pass
 
@@ -146,10 +168,12 @@ def testKanjiTrainer():
     result = kanjiTrainer.exec()
     print(result)
     if result == 1:
-        fileStorageEngine.save(kanjiTrainerData, u"C:/Tmp/", u"KanjiTrainer")
+        fileStorageEngine.save(kanjiTrainerData, "C:/Tmp/", "KanjiTrainer")
+
 
 def affe(ok):
     print("load: " + str(ok))
+
 
 import base64
 import subprocess
@@ -162,6 +186,8 @@ from Core.LearnedKana import *
 from Core.LearnedKanji import *
 from Dict.JapaneseDictionary import *
 from Core.KanjiKanaTransliterator import *
+
+
 def main():
     lk = LearnedKanji()
     lk.setHeisig(1)
@@ -174,13 +200,14 @@ def main():
     t.transliterateSentence(kanji, kana, True, False)
     return
 
-    #writeUpdateInfo()
-    #testKanaTrainer()
-    #testKanjium()
-    #testClozeEditor()
-    #testSettingsDialog()
-    #testWebsearch()
+    # writeUpdateInfo()
+    # testKanaTrainer()
+    # testKanjium()
+    # testClozeEditor()
+    # testSettingsDialog()
+    # testWebsearch()
     testKanjiTrainer()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

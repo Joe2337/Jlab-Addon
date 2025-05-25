@@ -1,5 +1,6 @@
 from AnkiTools.TemplateNames import *
 
+
 def findCards(collection, query):
     if collection is None:
         return []
@@ -8,8 +9,10 @@ def findCards(collection, query):
     except:
         return []
 
-def getListeningCardIds(collection, modifiers = ""):
-    return findCards(collection, u"card:" + TemplateNames.listeningTemplateName + modifiers)
 
-def getReadingCardIds(collection, modifiers = ""):
-    return findCards(collection, u"card:" + TemplateNames.clozeTemplateName + modifiers)
+def getListeningCardIds(collection, modifiers=""):
+    return findCards(collection, "card:" + TemplateNames.listeningTemplateName + modifiers)
+
+
+def getReadingCardIds(collection, modifiers=""):
+    return findCards(collection, "card:" + TemplateNames.clozeTemplateName + modifiers)

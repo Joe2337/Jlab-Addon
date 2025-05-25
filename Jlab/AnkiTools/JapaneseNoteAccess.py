@@ -11,25 +11,36 @@ from Core.KanaTools import *
 #   The field stores expressions/readings that had been looked up and used as cloze. This data is lateron used
 #   by the kanji trainer.
 
+
 class JapaneseNoteAccess:
-    _hiraganaFieldName = u"Jlab-Hiragana"
-    _hiraganaClozeFieldName = u"Jlab-HiraganaCloze"
-    _kanjiClozeFieldName = u"Jlab-KanjiCloze"
-    _spacedKanjiFieldName = u"Jlab-KanjiSpaced"
-    _listeningFrontFieldName = u"Jlab-ListeningFront"
-    _listeningBackFieldName = u"Jlab-ListeningBack"
-    _clozeFrontFieldName = u"Jlab-ClozeFront"
-    _clozeBackFieldName = u"Jlab-ClozeBack"
-    _lemmaFieldName = u"Jlab-Lemma"
-    _dictionaryLookupFieldName = u"Jlab-DictionaryLookup"
-    _metadataFieldName = u"Jlab-Metadata"
-    _otherFrontFieldName = u"Other-Front"
+    _hiraganaFieldName = "Jlab-Hiragana"
+    _hiraganaClozeFieldName = "Jlab-HiraganaCloze"
+    _kanjiClozeFieldName = "Jlab-KanjiCloze"
+    _spacedKanjiFieldName = "Jlab-KanjiSpaced"
+    _listeningFrontFieldName = "Jlab-ListeningFront"
+    _listeningBackFieldName = "Jlab-ListeningBack"
+    _clozeFrontFieldName = "Jlab-ClozeFront"
+    _clozeBackFieldName = "Jlab-ClozeBack"
+    _lemmaFieldName = "Jlab-Lemma"
+    _dictionaryLookupFieldName = "Jlab-DictionaryLookup"
+    _metadataFieldName = "Jlab-Metadata"
+    _otherFrontFieldName = "Other-Front"
 
-    allFields = { _hiraganaFieldName, _hiraganaClozeFieldName, _kanjiClozeFieldName, _spacedKanjiFieldName,
-                 _listeningFrontFieldName, _listeningBackFieldName, _clozeFrontFieldName, _clozeBackFieldName,
-                 _lemmaFieldName, _dictionaryLookupFieldName, _metadataFieldName }
+    allFields = {
+        _hiraganaFieldName,
+        _hiraganaClozeFieldName,
+        _kanjiClozeFieldName,
+        _spacedKanjiFieldName,
+        _listeningFrontFieldName,
+        _listeningBackFieldName,
+        _clozeFrontFieldName,
+        _clozeBackFieldName,
+        _lemmaFieldName,
+        _dictionaryLookupFieldName,
+        _metadataFieldName,
+    }
 
-    displayFields = { _listeningFrontFieldName, _listeningBackFieldName, _clozeFrontFieldName, _clozeBackFieldName }
+    displayFields = {_listeningFrontFieldName, _listeningBackFieldName, _clozeFrontFieldName, _clozeBackFieldName}
 
     def __init__(self, note, collection):
         self._note = note
@@ -117,9 +128,9 @@ class JapaneseNoteAccess:
         self._note.flush()
 
     def appendDictionaryLookup(self, expression, readings):
-        entry = expression.strip() + u"~" + readings.strip()
+        entry = expression.strip() + "~" + readings.strip()
         fieldIndex = self.getFieldIndex(JapaneseNoteAccess._dictionaryLookupFieldName)
         if len(self._note.fields[fieldIndex]) != 0:
-            self._note.fields[fieldIndex] += u"|"
+            self._note.fields[fieldIndex] += "|"
         self._note.fields[fieldIndex] += entry
         self._note.flush()

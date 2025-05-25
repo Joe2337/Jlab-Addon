@@ -1,6 +1,7 @@
 from Core.KanjiTools import *
 
-class LearnedKanji():
+
+class LearnedKanji:
     def __init__(self):
         self._learnedKanji = set()
         self._learnedKanjiHeisig = set()

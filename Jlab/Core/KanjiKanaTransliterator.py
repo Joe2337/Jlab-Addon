@@ -3,6 +3,7 @@ from Core.Kanjium import *
 from Core.KanjiRepresentation import *
 from Dict.TextFormatter import *
 
+
 # This class maps kanji within a word to their associated reading (both kanji and kana word must be given, which usually results from mecab).
 # It is capable of creating two representations out of this. Furigana and the jlab kanji trainer's own representation.
 # For furigana, the readings are attached to the kanji. If the kanji was learned, the reading is omitted.
@@ -17,21 +18,22 @@ from Dict.TextFormatter import *
 #
 # A more sophisticated solution could be https://github.com/Doublevil/JmdictFurigana
 class KanjiKanaTransliterator:
-    space = "\u205F" #http://jkorpela.fi/chars/spaces.html
+    space = "\u205f"  # http://jkorpela.fi/chars/spaces.html
+
     def __init__(self, kanjium, learnedKanji):
         assert isinstance(kanjium, Kanjium)
         self._kanjium = kanjium
         self._learnedKanji = learnedKanji
 
     def transliterateSentence(self, sentenceKanji, sentenceHiragana, defensively, spacedFurigana):
-        cleanedClozeKanji = TextFormatter.replaceClozesWithPlaceholder(sentenceKanji) # replace all clozes with *
+        cleanedClozeKanji = TextFormatter.replaceClozesWithPlaceholder(sentenceKanji)  # replace all clozes with *
         cleanedClozeHiragana = TextFormatter.replaceClozesWithPlaceholder(sentenceHiragana)  # replace all clozes with *
 
         cleanedSentenceKanji = cleanedClozeKanji[0]
-        kanjiWords = cleanedSentenceKanji.split(u" ")
+        kanjiWords = cleanedSentenceKanji.split(" ")
 
         cleanedSentenceHiragana = cleanedClozeHiragana[0]
-        hiraganaWords = cleanedSentenceHiragana.split(u" ")
+        hiraganaWords = cleanedSentenceHiragana.split(" ")
 
         furiganaResult = jlabResult = ""
         if len(kanjiWords) != len(hiraganaWords):
@@ -66,7 +68,7 @@ class KanjiKanaTransliterator:
         if fromLeft:
             return (kanjiWord[index], hiraganaWord[index])
         else:
-            return (kanjiWord[-(index+1)], hiraganaWord[-(index+1)])
+            return (kanjiWord[-(index + 1)], hiraganaWord[-(index + 1)])
 
     # returns: hiragana start, kanji remainder, hiragana remainder
     def _splitToFirstKanji(self, kanjiWord, hiraganaWord, fromLeft):
@@ -76,7 +78,7 @@ class KanjiKanaTransliterator:
                 if fromLeft:
                     return kanjiWord[:i], kanjiWord[i:], hiraganaWord[i:]
                 else:
-                    return kanjiWord[len(kanjiWord)-i:], kanjiWord[:len(kanjiWord)-i], hiraganaWord[:len(hiraganaWord)-i]
+                    return kanjiWord[len(kanjiWord) - i :], kanjiWord[: len(kanjiWord) - i], hiraganaWord[: len(hiraganaWord) - i]
 
         return "", kanjiWord, hiraganaWord
 
@@ -127,7 +129,8 @@ class KanjiKanaTransliterator:
             reading = self._getReadingForFirstKanji(curKanji, hiraRemainder, True)
             if len(reading) == 0:
                 raise Exception(
-                    "No reading found")  # in this case it is likely, that the first deduced readings are wrong, an example is 曳子 (correct:hiki.ko, but is: hi.kiko)
+                    "No reading found"
+                )  # in this case it is likely, that the first deduced readings are wrong, an example is 曳子 (correct:hiki.ko, but is: hi.kiko)
 
             # kanji remainder length == 1 covers some special cases, where a word ends with an irregular reading. This is safe to use,
             # because if the reading was not unique, an exception would have been raised earlier. It could be, that the error occurred
@@ -142,7 +145,7 @@ class KanjiKanaTransliterator:
                 # default case, which is most correct
                 representation.addKanjiText(curKanji, reading, self._learnedKanji, True)
                 kanjiRemainder = kanjiRemainder[1:]
-                hiraRemainder = hiraRemainder[len(reading):]
+                hiraRemainder = hiraRemainder[len(reading) :]
 
         return representation.furigana, representation.jlab, kanjiRemainder, hiraRemainder
 
@@ -200,7 +203,7 @@ class KanjiKanaTransliterator:
 
             representation.addKanjiText(curKanji, reading, self._learnedKanji, False)
             kanjiRemainder = kanjiRemainder[:-1]
-            hiraRemainder = hiraRemainder[:-len(reading)]
+            hiraRemainder = hiraRemainder[: -len(reading)]
 
         return representation.furigana, representation.jlab, kanjiRemainder, hiraRemainder
 

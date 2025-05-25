@@ -2,6 +2,7 @@ from aqt.qt import *
 from Core.KanaRoumajiTransliterator import *
 from Core.ReadingAssistanceType import *
 
+
 class DictTable(QTableWidget):
     expressionIndex = 0
     readingIndex = 1
@@ -19,8 +20,8 @@ class DictTable(QTableWidget):
 
     def initUI(self):
         self.setColumnCount(4)
-        self.setHorizontalHeaderLabels(('Expression', 'Reading', 'Misc', 'Meaning'))
-        #self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.setHorizontalHeaderLabels(("Expression", "Reading", "Misc", "Meaning"))
+        # self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setColumnWidth(self.expressionIndex, 150)
         self.setColumnWidth(self.readingIndex, 150)
         self.setColumnWidth(self.miscIndex, 150)
@@ -29,8 +30,8 @@ class DictTable(QTableWidget):
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
 
-        #self.cellClicked.connect(self.cellClick)
-        #self.doubleClicked.connect(self.cellDoubleClick)
+        # self.cellClicked.connect(self.cellClick)
+        # self.doubleClicked.connect(self.cellDoubleClick)
 
     def addRow(self, expression, reading, misc, meaning):
         rowPosition = self.rowCount()
@@ -59,7 +60,7 @@ class DictTable(QTableWidget):
             raise Exception("KanaRoumajiTransliterator not set")
 
         while self.rowCount() != 0:
-            self.removeRow(self.rowCount()-1)
+            self.removeRow(self.rowCount() - 1)
         for row in data:
             readingDisplay = row[1]
             if readingAssistanceType == ReadingAssistanceType.latin:

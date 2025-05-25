@@ -1,57 +1,42 @@
-#coding: utf8
+# coding: utf8
 # unicode blocks: http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
 import re
+
 
 class KanaType:
     hiragana = "Hiragana"
     katakana = "Katakana"
 
-class KanaTools:
-    upperLowerRegexCreator = [
-        u"[あぁ]",
-        u"[いぃ]",
-        u"[うぅ]",
-        u"[えぇ]",
-        u"[おぉ]",
-        u"[かゕ]",
-        u"[けゖ]",
-        u"[わゎ]"
-    ]
 
-    geminationLikely = {
-        u"か",
-        u"き",
-        u"く",
-        u"け",
-        u"こ",
-        u"つ",
-        u"ち"
-    }
+class KanaTools:
+    upperLowerRegexCreator = ["[あぁ]", "[いぃ]", "[うぅ]", "[えぇ]", "[おぉ]", "[かゕ]", "[けゖ]", "[わゎ]"]
+
+    geminationLikely = {"か", "き", "く", "け", "こ", "つ", "ち"}
 
     dakuten = {
-        u"か": [u"が"],
-        u"き": [u"ぎ"],
-        u"く": [u"ぐ"],
-        u"け": [u"げ"],
-        u"こ": [u"ご"],
-        u"さ": [u"ざ"],
-        u"し": [u"じ"],
-        u"す": [u"ず"],
-        u"せ": [u"ぜ"],
-        u"そ": [u"ぞ"],
-        u"た": [u"だ"],
-        u"ち": [u"ぢ"],
-        u"つ": [u"づ"],
-        u"て": [u"で"],
-        u"と": [u"ど"],
-        u"は": [u"ば", u"ぱ"],
-        u"ひ": [u"び", u"ぴ"],
-        u"ふ": [u"ぶ", u"ぷ"],
-        u"へ": [u"べ", u"ぺ"],
-        u"ほ": [u"ぼ", u"ぽ"]
+        "か": ["が"],
+        "き": ["ぎ"],
+        "く": ["ぐ"],
+        "け": ["げ"],
+        "こ": ["ご"],
+        "さ": ["ざ"],
+        "し": ["じ"],
+        "す": ["ず"],
+        "せ": ["ぜ"],
+        "そ": ["ぞ"],
+        "た": ["だ"],
+        "ち": ["ぢ"],
+        "つ": ["づ"],
+        "て": ["で"],
+        "と": ["ど"],
+        "は": ["ば", "ぱ"],
+        "ひ": ["び", "ぴ"],
+        "ふ": ["ぶ", "ぷ"],
+        "へ": ["べ", "ぺ"],
+        "ほ": ["ぼ", "ぽ"],
     }
 
-    #init hiragana <-> katakana conversion dictionaries
+    # init hiragana <-> katakana conversion dictionaries
     _kataToHira = {}
     _hiraToKata = {}
 
@@ -62,8 +47,8 @@ class KanaTools:
         _kataToHira[chr(kataStart + i)] = chr(hiraStart + i)
         _hiraToKata[chr(hiraStart + i)] = chr(kataStart + i)
 
-    #init regex for checking non-katakana characters
-    _rxNoKatakana = re.compile(u"[^ァ-ー]")
+    # init regex for checking non-katakana characters
+    _rxNoKatakana = re.compile("[^ァ-ー]")
     rxKana = re.compile("[\u3040-\u30ff]")
 
     # string is katakana, if no other char type is found. Note, that whitespaces and other chars will return false.
@@ -71,7 +56,7 @@ class KanaTools:
     def isKatakana(inputData):
         return not KanaTools._rxNoKatakana.search(inputData)
 
-    #Converts every hiragana character in the input string to katakana (non-hiragana is adopted unchanged)
+    # Converts every hiragana character in the input string to katakana (non-hiragana is adopted unchanged)
     @staticmethod
     def hiraToKata(stringWithHiragana):
         result = ""
@@ -83,8 +68,7 @@ class KanaTools:
                 result += curChar
         return result
 
-
-    #Converts every katakana character in the input string to hiragana (non-katakana is adopted unchanged)
+    # Converts every katakana character in the input string to hiragana (non-katakana is adopted unchanged)
     @staticmethod
     def kataToHira(stringWithKatakana):
         result = ""
@@ -97,8 +81,8 @@ class KanaTools:
         return result
 
     @staticmethod
-    #Creates a regular expression for a kana string with wrong capitalization. The regex allows to find all occurences
-    #of the wronly capitalized string within a given other kana string that is spelled correctly.
+    # Creates a regular expression for a kana string with wrong capitalization. The regex allows to find all occurences
+    # of the wronly capitalized string within a given other kana string that is spelled correctly.
     def createCaseInsensitiveRegex(kanaStringWrongCase):
         caseInsensitiveRegexCreator = kanaStringWrongCase
         for curChars in KanaTools.upperLowerRegexCreator:
@@ -107,11 +91,11 @@ class KanaTools:
         return re.compile(caseInsensitiveRegexCreator)
 
     @staticmethod
-    #Returns all (correctly spelled) occurences of a wrongly capitalized kana string within a correctly spelled string.
-    #The wrongly spelled kana string is represented as regex. This allows to find one wrongly spelled input string within
-    #multiple others without having to recompile the regex.
+    # Returns all (correctly spelled) occurences of a wrongly capitalized kana string within a correctly spelled string.
+    # The wrongly spelled kana string is represented as regex. This allows to find one wrongly spelled input string within
+    # multiple others without having to recompile the regex.
     def findPositionCaseInsensitiveRegexInput(kanaRegexCaseInsensitive, kanaStringCorrectCase):
-        #each element of finditer is a MatchObject. start() returns the index of the complete match, group() the entire match
+        # each element of finditer is a MatchObject. start() returns the index of the complete match, group() the entire match
         matchResult = kanaRegexCaseInsensitive.finditer(kanaStringCorrectCase)
         result = []
         for curMatch in matchResult:
@@ -119,8 +103,8 @@ class KanaTools:
         return result
 
     @staticmethod
-    #finds all occurences of a wrongly capitalized kana string within a correctly spelled kana string. Convenience
-    #function that takes two strings as input
+    # finds all occurences of a wrongly capitalized kana string within a correctly spelled kana string. Convenience
+    # function that takes two strings as input
     def findPositionCaseInsensitiveStringInput(kanaStringWrongCase, kanaStringCorrectCase):
         caseInsensitiveRegex = KanaTools.createCaseInsensitiveRegex(kanaStringWrongCase)
         return KanaTools.findPositionCaseInsensitiveRegexInput(caseInsensitiveRegex, kanaStringCorrectCase)

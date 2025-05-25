@@ -1,9 +1,10 @@
-#coding: utf8
+# coding: utf8
 
 import unittest
 from AutoTest.GlobalData import *
 from Core.KanjiKanaTransliterator import *
 from Core.LearnedKanji import *
+
 
 def checkOutput(furigana, expectedFurigana, jlab, expectedJlab, kanjiRemainder, hiraganaRemainder):
     if furigana != expectedFurigana:
@@ -14,6 +15,7 @@ def checkOutput(furigana, expectedFurigana, jlab, expectedJlab, kanjiRemainder, 
         raise ValueError("Kanji remainder not 0")
     if len(hiraganaRemainder) != 0:
         raise ValueError("Kana remainder not 0")
+
 
 class TestKanjiKanaTransliteration(unittest.TestCase):
 
@@ -43,7 +45,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         self.assertEqual(kanjiRemainder, "x食")
         self.assertEqual(hiraRemainter, "xた")
 
-
     def testSpellingCases(self):
         t = KanjiKanaTransliterator(kanjium, LearnedKanji())
 
@@ -66,9 +67,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # reading not ok for single kanji: left should raise an exception, right should work
         kanji = "食べる"
         kana = "xべる"
@@ -86,9 +84,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # reading not ok for multiple kanji: left should raise an exception, right should work
         kanji = "食食べる"
@@ -108,9 +103,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # reading not ok for "in between"-kanji, no kana between kanji
         kanji = "食食べる"
         kana = "たxべる"
@@ -128,9 +120,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # reading not ok for one kanji in a row of other kanji, should behave differently depending on defensiveness
         kanji = "食食べる"
@@ -151,9 +140,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, kanjiRemainder, hiraRemainder)
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # reading not ok for one kanji among others in the word, separated by kana
         kanji = "食の食べる"
@@ -177,9 +163,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         self.assertEqual(kanjiRemainder, "食べる")
         self.assertEqual(hiraRemainder, "xべる")
 
-
-
-
     # for more info in these test cases, refer to https://japanese.stackexchange.com/questions/69521/reading-per-kanji-irregular-readings
     def testSelectedWords(self):
         t = KanjiKanaTransliterator(kanjium, LearnedKanji())
@@ -200,9 +183,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # irregular reading enclosed with kana
         kanji = "お兄さん"
         kana = "おにいさん"
@@ -213,9 +193,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # irregular reading not enclosed
         kanji = "今日"
@@ -228,9 +205,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # kanji word longer than its reading
         kanji = "大口魚"
         kana = "たら"
@@ -241,9 +215,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # 2 readings for 1 compound, this is easy (resolved by regular cases)
         kanji = "人気"
@@ -265,9 +236,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # order of the readings mixed up
         kanji = "不忍"
         kana = "しのばず"
@@ -279,9 +247,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # hidden kana (the second "no" cannot be mapped anywhere, in this case defensive would be better)
         kanji = "不忍池"
         kana = "しのばずのいけ"
@@ -291,12 +256,9 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, True)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-        expectedFurigana = " 不忍[しのばずの] 池[いけ]" #this furigana is wrong
+        expectedFurigana = " 不忍[しのばずの] 池[いけ]"  # this furigana is wrong
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # irregular reading (same as kyou)
         kanji = "忠実"
@@ -309,9 +271,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
         # same word with irregular reading (mame / 忠実) repeated, defensive would be better here.
         kanji = "忠実忠実しい"
         kana = "まめまめしい"
@@ -321,11 +280,9 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, True)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-        expectedFurigana = " 忠実忠[まめ] 実[まめ]しい" #this furigana is wrong
+        expectedFurigana = " 忠実忠[まめ] 実[まめ]しい"  # this furigana is wrong
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
 
     # the number test case is only for completenes, it is basically covered by the other cases above.
     # Numbers spelled as numeric chars are not found in kanjium, but correctly mapped to hiragana by mecab.
@@ -347,9 +304,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
     def testKatakana(self):
         t = KanjiKanaTransliterator(kanjium, LearnedKanji())
 
@@ -362,9 +316,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
-
-
-
 
         # Katakana in combination with kanji must not yield furigana
         # kanji at right side
@@ -397,7 +348,6 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
         # kanji with irregular reading inside
         kanji = "カタカナ食カタカナ"
         kana = "かたかなxかたかな"
@@ -408,18 +358,15 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
         furigana, jlab = t._transliterateWord(kanji, kana, False)
         checkOutput(furigana, expectedFurigana, jlab, expectedJlab, "", "")
 
-
-
-
     # check, if every word of the dictionary can be mapped to a reading without exceptions
     def testDictionary(self):
         t = KanjiKanaTransliterator(kanjium, LearnedKanji())
 
         i = 0
         numErrors = 0
-        #file = codecs.open(u"C:/Tmp/Debug.txt", u"w", u"utf-8")
+        # file = codecs.open(u"C:/Tmp/Debug.txt", u"w", u"utf-8")
 
-        rxRoumaji = re.compile(u"[a-zA-Z\uff01-\uff5a\u0370-\u03ff]")  # matches latin, japanese latin, greek characters
+        rxRoumaji = re.compile("[a-zA-Z\uff01-\uff5a\u0370-\u03ff]")  # matches latin, japanese latin, greek characters
 
         for row in jDict.getExpressionAndReadingOfAllEntries():
 
@@ -427,11 +374,11 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
                 i += 1
                 continue
 
-            allExpressions = row[0].split(u",")
-            allReadings = row[1].split(u",")
+            allExpressions = row[0].split(",")
+            allReadings = row[1].split(",")
 
             oneFound = False
-            errorMessages = u""
+            errorMessages = ""
             for curExpression in allExpressions:
                 for curReading in allReadings:
                     try:
@@ -439,7 +386,7 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
                         oneFound = True
                         break
                     except Exception as e:
-                        errorMessages += str(e) + u"\n"
+                        errorMessages += str(e) + "\n"
                         pass
                 if oneFound:
                     break
@@ -454,4 +401,3 @@ class TestKanjiKanaTransliteration(unittest.TestCase):
             i += 1
 
         self.assertEqual(numErrors, 0)
-

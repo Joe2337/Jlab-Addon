@@ -1,16 +1,17 @@
-#coding: utf8
+# coding: utf8
 import sqlite3
 import os.path
 import re
 from Core.KanaTools import *
 from Core.KanjiTools import *
 
-class Kanjium:
-    readingCleanupRegex = re.compile(u"\s|（(.*?)）|\((.*?)\)") #matches whitespaces and anything in brackets
 
-    def __init__(self, path = u""):
+class Kanjium:
+    readingCleanupRegex = re.compile("\s|（(.*?)）|\((.*?)\)")  # matches whitespaces and anything in brackets
+
+    def __init__(self, path=""):
         if len(path) == 0:
-            path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) +u"/Data/kanjidb.sqlite"
+            path = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + "/Data/kanjidb.sqlite"
         if not os.path.isfile(path):
             raise Exception("Invalid path: " + path)
         self._db = sqlite3.connect(path, check_same_thread=False)
@@ -21,23 +22,21 @@ class Kanjium:
     # Returns all readings of the kanji in hiragana without okurigana
     def getReadings(self, kanji):
         cursor = self._db.cursor()
-        cursor.execute('select onyomi, kunyomi, nanori '
-                       'from kanjidict '
-                       'where kanji = ?', [kanji])
+        cursor.execute("select onyomi, kunyomi, nanori " "from kanjidict " "where kanji = ?", [kanji])
 
         rows = cursor.fetchall()
         result = set()
         for row in rows:
             if row[0] is not None:
-                for curOnyomi in Kanjium.readingCleanupRegex.sub(u"", row[0]).split(u"、"):
+                for curOnyomi in Kanjium.readingCleanupRegex.sub("", row[0]).split("、"):
                     if len(curOnyomi) != 0:
                         result.add(KanaTools.kataToHira(curOnyomi))
             if row[1] is not None:
-                for curKunyomi in Kanjium.readingCleanupRegex.sub(u"", row[1]).split(u"、"):
+                for curKunyomi in Kanjium.readingCleanupRegex.sub("", row[1]).split("、"):
                     if len(curKunyomi) != 0:
                         result.add(curKunyomi)
             if row[2] is not None:
-                for nanori in Kanjium.readingCleanupRegex.sub(u"", row[2]).split(u"、"):
+                for nanori in Kanjium.readingCleanupRegex.sub("", row[2]).split("、"):
                     if len(nanori) != 0:
                         result.add(nanori)
 
@@ -47,34 +46,33 @@ class Kanjium:
         modifiedReadings = self._getModifiedReadingsGemination(result)
         result.update(modifiedReadings)
         return result
-        if kanji == u"一":
-            result.add(u"いっ")
+        if kanji == "一":
+            result.add("いっ")
         return result
 
     def countReadings(self):
         cursor = self._db.cursor()
-        cursor.execute('select kanji, onyomi, kunyomi '
-                       'from kanjidict ')
+        cursor.execute("select kanji, onyomi, kunyomi " "from kanjidict ")
         rows = cursor.fetchall()
 
-        readings = u""
+        readings = ""
         for row in rows:
             if row[1] is not None:
-                readings += row[1] + u"、"
+                readings += row[1] + "、"
             if row[2] is not None:
-                readings += row[2] + u"、"
-        print(u"Total readings: " + str(readings.count(u"、")))
+                readings += row[2] + "、"
+        print("Total readings: " + str(readings.count("、")))
 
         heisigSet = set(KanjiTools.heisigList)
-        readings = u""
+        readings = ""
         for row in rows:
             if row[0] not in heisigSet:
                 continue
             if row[1] is not None:
-                readings += row[1] + u"、"
+                readings += row[1] + "、"
             if row[2] is not None:
-                readings += row[2] + u"、"
-        print(u"Heisig readings: " + str(readings.count(u"、")))
+                readings += row[2] + "、"
+        print("Heisig readings: " + str(readings.count("、")))
 
     def _getModifiedReadings(self, readings):
         modifiedReadings = set()
@@ -91,7 +89,7 @@ class Kanjium:
         for curReading in readings:
             if curReading[-1] in KanaTools.geminationLikely:
                 if len(curReading) == 1:
-                    modifiedReadings.add(curReading + u"っ")
+                    modifiedReadings.add(curReading + "っ")
                 else:
-                    modifiedReadings.add(curReading[:-1] + u"っ")
+                    modifiedReadings.add(curReading[:-1] + "っ")
         return modifiedReadings

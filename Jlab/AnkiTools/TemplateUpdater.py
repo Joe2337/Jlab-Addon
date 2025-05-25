@@ -1,6 +1,7 @@
 from AnkiTools.JapaneseNoteAccess import *
 from aqt.utils import showInfo
 
+
 class TemplateUpdater:
 
     # adds furigana to jlab front/back fields (in all templates)

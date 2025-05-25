@@ -1,6 +1,7 @@
 from Persistence.IStorable import *
 from Core.ReadingAssistanceType import *
 
+
 class Settings(IStorable):
     def __init__(self):
         self.version = 1
@@ -18,40 +19,42 @@ class Settings(IStorable):
 
     def toDictionary(self):
         return {
-            u"version" : self.getVersion(),
-            u"identifier" : self.getIdentifier(),
-            u"listeningFrontReadingAssistance" : self.listeningFrontReadingAssistance,
-            u"listeningBackReadingAssistance" : self.listeningBackReadingAssistance,
-            u"clozeFrontReadingAssistance" : self.clozeFrontReadingAssistance,
-            u"clozeBackReadingAssistance" : self.clozeBackReadingAssistance,
-            u"clozeEditorReadingAssistance" : self.clozeEditorReadingAssistance,
-            u"manageJlabCards" : self.manageJlabCards,
-            u"promptBeforeCardManagementAction" : self.promptBeforeCardManagementAction,
-            u"endAction" : self.endAction,
-            u"lcEndInterval" : self.lcEndInterval,
-            u"clozeEndInterval" : self.clozeEndInterval
+            "version": self.getVersion(),
+            "identifier": self.getIdentifier(),
+            "listeningFrontReadingAssistance": self.listeningFrontReadingAssistance,
+            "listeningBackReadingAssistance": self.listeningBackReadingAssistance,
+            "clozeFrontReadingAssistance": self.clozeFrontReadingAssistance,
+            "clozeBackReadingAssistance": self.clozeBackReadingAssistance,
+            "clozeEditorReadingAssistance": self.clozeEditorReadingAssistance,
+            "manageJlabCards": self.manageJlabCards,
+            "promptBeforeCardManagementAction": self.promptBeforeCardManagementAction,
+            "endAction": self.endAction,
+            "lcEndInterval": self.lcEndInterval,
+            "clozeEndInterval": self.clozeEndInterval,
         }
 
     def fromDictionary(self, dictionary):
-        version = dictionary[u"version"]
-        self.listeningFrontReadingAssistance = dictionary[u"listeningFrontReadingAssistance"]
-        self.listeningBackReadingAssistance = dictionary[u"listeningBackReadingAssistance"]
-        self.clozeFrontReadingAssistance = dictionary[u"clozeFrontReadingAssistance"]
-        self.clozeBackReadingAssistance = dictionary[u"clozeBackReadingAssistance"]
-        self.clozeEditorReadingAssistance = dictionary[u"clozeEditorReadingAssistance"]
+        version = dictionary["version"]
+        self.listeningFrontReadingAssistance = dictionary["listeningFrontReadingAssistance"]
+        self.listeningBackReadingAssistance = dictionary["listeningBackReadingAssistance"]
+        self.clozeFrontReadingAssistance = dictionary["clozeFrontReadingAssistance"]
+        self.clozeBackReadingAssistance = dictionary["clozeBackReadingAssistance"]
+        self.clozeEditorReadingAssistance = dictionary["clozeEditorReadingAssistance"]
 
         if version == 0:
-            self.manageJlabCards = True #version 0's cards are always managed
+            self.manageJlabCards = True  # version 0's cards are always managed
 
         if version >= 1:
-            self.manageJlabCards = dictionary[u"manageJlabCards"]
-            self.promptBeforeCardManagementAction = dictionary[u"promptBeforeCardManagementAction"]
-            self.endAction = dictionary[u"endAction"]
-            self.lcEndInterval = dictionary[u"lcEndInterval"]
-            self.clozeEndInterval = dictionary[u"clozeEndInterval"]
+            self.manageJlabCards = dictionary["manageJlabCards"]
+            self.promptBeforeCardManagementAction = dictionary["promptBeforeCardManagementAction"]
+            self.endAction = dictionary["endAction"]
+            self.lcEndInterval = dictionary["lcEndInterval"]
+            self.clozeEndInterval = dictionary["clozeEndInterval"]
 
     def cardFormatChanged(self, settings):
-        return self.listeningFrontReadingAssistance != settings.listeningFrontReadingAssistance or \
-               self.listeningBackReadingAssistance != settings.listeningBackReadingAssistance or \
-               self.clozeFrontReadingAssistance != settings.clozeFrontReadingAssistance or \
-               self.clozeBackReadingAssistance != settings.clozeBackReadingAssistance
+        return (
+            self.listeningFrontReadingAssistance != settings.listeningFrontReadingAssistance
+            or self.listeningBackReadingAssistance != settings.listeningBackReadingAssistance
+            or self.clozeFrontReadingAssistance != settings.clozeFrontReadingAssistance
+            or self.clozeBackReadingAssistance != settings.clozeBackReadingAssistance
+        )

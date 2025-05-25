@@ -1,7 +1,8 @@
-#coding: utf8
+# coding: utf8
 
 import unittest
 from Core.Settings import *
+
 
 class TestSettings(unittest.TestCase):
 
@@ -10,33 +11,33 @@ class TestSettings(unittest.TestCase):
         settingsB = Settings()
 
         if settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format changed")
+            raise Exception("Card format changed")
 
-        settingsB.listeningBackReadingAssistance = u"a"
+        settingsB.listeningBackReadingAssistance = "a"
         if not settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format not changed ")
+            raise Exception("Card format not changed ")
 
         settingsB = Settings()
-        settingsB.listeningFrontReadingAssistance = u"a"
+        settingsB.listeningFrontReadingAssistance = "a"
         if not settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format not changed ")
+            raise Exception("Card format not changed ")
 
         settingsB = Settings()
-        settingsB.clozeFrontReadingAssistance = u"a"
+        settingsB.clozeFrontReadingAssistance = "a"
         if not settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format not changed ")
+            raise Exception("Card format not changed ")
 
         settingsB = Settings()
-        settingsB.clozeBackReadingAssistance = u"a"
+        settingsB.clozeBackReadingAssistance = "a"
         if not settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format not changed ")
+            raise Exception("Card format not changed ")
 
         settingsB = Settings()
-        settingsB.clozeEditorReadingAssistance = u"a"
+        settingsB.clozeEditorReadingAssistance = "a"
         if settingsA.cardFormatChanged(settingsB):
-            raise Exception(u"Card format not changed ")
+            raise Exception("Card format not changed ")
 
-    #test, if current version can be saved and loaded
+    # test, if current version can be saved and loaded
     def testIStorable(self):
         settingsA = Settings()
         settingsA.fromDictionary(settingsA.toDictionary())

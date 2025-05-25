@@ -6,6 +6,7 @@ from Core.CardEndActionType import CardEndActionType
 from Core.WebSearch import WebSearch
 import os
 
+
 class SettingsDialog(QDialog):
     def __init__(self, settings):
         super(SettingsDialog, self).__init__()
@@ -24,7 +25,7 @@ class SettingsDialog(QDialog):
         self._ui.dataFolderLineEdit.setText(path)
 
     def onBrowseClicked(self):
-        self._ui.dataFolderLineEdit.setText(QFileDialog.getExistingDirectory(None, u"Select Directory"))
+        self._ui.dataFolderLineEdit.setText(QFileDialog.getExistingDirectory(None, "Select Directory"))
 
     def onManualClicked(self):
         WebSearch.openUrl("https://www.japanese-like-a-breeze.com/card-management/")
@@ -42,7 +43,7 @@ class SettingsDialog(QDialog):
         result.manageJlabCards = self._ui.manageCheckbox.isChecked()
         result.promptBeforeCardManagementAction = self._ui.promptCheckbox.isChecked()
         result.endAction = self._ui.endActionComboBox.currentText()
-        result.lcEndInterval =  self._ui.lcIntervalSpinBox.value()
+        result.lcEndInterval = self._ui.lcIntervalSpinBox.value()
         result.clozeEndInterval = self._ui.clozeIntervalSpinBox.value()
         return result
 
@@ -63,7 +64,7 @@ class SettingsDialog(QDialog):
     def _setComboBoxIndexByText(self, combobox, text):
         index = combobox.findText(text)
         if index == -1:
-            raise ValueError(U"Item not found")
+            raise ValueError("Item not found")
         combobox.setCurrentIndex(index)
 
     def _initManagementSettings(self, settings):

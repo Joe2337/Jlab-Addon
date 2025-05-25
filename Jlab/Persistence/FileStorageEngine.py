@@ -11,7 +11,7 @@ class FileStorageEngine(IStorageEngine):
 
     @staticmethod
     def makePath(folder, filename):
-        return folder + u"/" + filename + u".json"
+        return folder + "/" + filename + ".json"
 
     def save(self, iStorable, folder, filename):
         if not os.path.exists(folder):
@@ -27,7 +27,7 @@ class FileStorageEngine(IStorageEngine):
             file.close()
 
     def loadFromFile(self, path, iStorable):
-        content = u""
+        content = ""
         with codecs.open(path, "r", encoding="utf-8") as file:
             content = file.read()
             file.close()
@@ -39,7 +39,9 @@ class FileStorageEngine(IStorageEngine):
         v1 = dict1["version"]
 
         if v0 > v1:
-            raise ValueError("dict 0 is newer than dict 1") # this means that a saved istorable is newer than the instantiated istorable, which must never happen
+            raise ValueError(
+                "dict 0 is newer than dict 1"
+            )  # this means that a saved istorable is newer than the instantiated istorable, which must never happen
 
         if v0 < v1:
             return True
@@ -51,7 +53,7 @@ class FileStorageEngine(IStorageEngine):
         return False
 
     def fileOutdated(self, path, iStorable):
-        content = u""
+        content = ""
         with codecs.open(path, "r", encoding="utf-8") as file:
             content = file.read()
             file.close()
@@ -59,7 +61,3 @@ class FileStorageEngine(IStorageEngine):
         dictionaryMem = iStorable.toDictionary()
 
         return self._dict0Outdated(dictionaryFile, dictionaryMem)
-
-
-
-

@@ -1,8 +1,9 @@
-#TODO: When upgrading to anki 2.1, this can be replaced with newer versions, see:
-#https://stackoverflow.com/questions/13646245/is-it-possible-to-make-abstract-classes-in-python
+# TODO: When upgrading to anki 2.1, this can be replaced with newer versions, see:
+# https://stackoverflow.com/questions/13646245/is-it-possible-to-make-abstract-classes-in-python
 
 from abc import ABCMeta, abstractmethod
-import collections #todo: remove
+import collections  # todo: remove
+
 
 class IStorable:
 

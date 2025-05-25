@@ -1,4 +1,4 @@
-#coding: utf8
+# coding: utf8
 from Core.KanaTools import *
 from Core.KanaRoumajiTransliterator import *
 from Core.KanjiKanaTransliterator import *
@@ -6,48 +6,64 @@ from Core.ReadingAssistanceType import ReadingAssistanceType
 import copy
 from Core.Kanjium import *
 
+
 class ClozePosition:
     def __init__(self, start, length):
         self.start = start
         self.length = length
 
     def __str__(self):
-        return u"(" + str(self.start) + u", " + str(self.length) + u")"
+        return "(" + str(self.start) + ", " + str(self.length) + ")"
+
 
 class TextPosition:
     def __init__(self, startWordIndex, endWordIndex, startComplete, endComplete):
         self.startWordIndex = startWordIndex
         self.endWordIndex = endWordIndex
-        self.startComplete = startComplete #True: First word selected completely
-        self.endComplete = endComplete #True: Last word selected completely
+        self.startComplete = startComplete  # True: First word selected completely
+        self.endComplete = endComplete  # True: Last word selected completely
 
     def __str__(self):
-        return u"start word: " + str(self.startWordIndex) + u"\n" \
-               + u"end word: " + str(self.endWordIndex) + u"\n" \
-               + u"start complete: " + str(self.startComplete) + u"\n" \
-               + u"end complete: " + str(self.endComplete) + u"\n" \
+        return (
+            "start word: "
+            + str(self.startWordIndex)
+            + "\n"
+            + "end word: "
+            + str(self.endWordIndex)
+            + "\n"
+            + "start complete: "
+            + str(self.startComplete)
+            + "\n"
+            + "end complete: "
+            + str(self.endComplete)
+            + "\n"
+        )
+
 
 class ClozeNotFoundException(Exception):
     def __init__(self, message):
         super(ClozeNotFoundException, self).__init__(message)
 
-#This class is used for accessing words in a japanese sentences
-#It is used for:
+
+# This class is used for accessing words in a japanese sentences
+# It is used for:
 # - Retrieve a dictionary query for a selected roumaji/hiragana text
 # - adding cloze to hiragana/kanji based on selected text
-#The transliterator is required in order to enable roumaji as input for dictionary selection (and in the future
-#also a mix of kana/roumaji
+# The transliterator is required in order to enable roumaji as input for dictionary selection (and in the future
+# also a mix of kana/roumaji
 class JapaneseTextAccess:
-    _wordSeparator = u" "
+    _wordSeparator = " "
 
-    def __init__(self, spacedHiragana, spacedKanji, hiraganaCloze, kanjiCloze, lemmata, kanaRoumajiTransliterator, kanjiKanaTransliterator, kanjium, defensively):
+    def __init__(
+        self, spacedHiragana, spacedKanji, hiraganaCloze, kanjiCloze, lemmata, kanaRoumajiTransliterator, kanjiKanaTransliterator, kanjium, defensively
+    ):
         assert isinstance(kanaRoumajiTransliterator, KanaRoumajiTransliterator)
         assert isinstance(kanjiKanaTransliterator, KanjiKanaTransliterator)
         assert isinstance(kanjium, Kanjium)
         self._kanaRoumajiTransliterator = kanaRoumajiTransliterator
         self._kanjium = kanjium
 
-        #potential card front sides without clozes
+        # potential card front sides without clozes
         self._spacedHiragana = spacedHiragana
         self._spacedKanji = spacedKanji
         self._lemmata = lemmata
@@ -58,10 +74,23 @@ class JapaneseTextAccess:
         # Convert the furigana text to the format produced by text selection within anki (word contains furigana without brackets)
         # This enables word search for full word furigana
         self._furigana, jlab = kanjiKanaTransliterator.transliterateSentence(self._spacedKanji, self._spacedHiragana, defensively, True)
-        self._furigana = self._furigana.replace(" ", "").replace(KanjiKanaTransliterator.space, " ").replace(KanjiRepresentation.furiStart, "").replace(KanjiRepresentation.furiEnd, "")
-        self._frontTextOptionsNoCloze = [self._spacedHiragana, self._spacedKanji, self._roumaji, self._kanaTrainerHiragana, self._kanaTrainerKatakana, self._lemmata, self._furigana]
+        self._furigana = (
+            self._furigana.replace(" ", "")
+            .replace(KanjiKanaTransliterator.space, " ")
+            .replace(KanjiRepresentation.furiStart, "")
+            .replace(KanjiRepresentation.furiEnd, "")
+        )
+        self._frontTextOptionsNoCloze = [
+            self._spacedHiragana,
+            self._spacedKanji,
+            self._roumaji,
+            self._kanaTrainerHiragana,
+            self._kanaTrainerKatakana,
+            self._lemmata,
+            self._furigana,
+        ]
 
-        #token / word lists for the front side options
+        # token / word lists for the front side options
         self._hiraganaToken = spacedHiragana.split()
         self._kanjiToken = spacedKanji.split()
         self._lemmaToken = lemmata.split()
@@ -90,9 +119,9 @@ class JapaneseTextAccess:
         result = []
         for curWord in self._kanjiToken:
             curIdentifierList = []
-            for curChar in KanaTools.kataToHira(curWord): #katakana is processed as hiragana internally
+            for curChar in KanaTools.kataToHira(curWord):  # katakana is processed as hiragana internally
                 curReadings = kanjium.getReadings(curChar)
-                curReadings.add(curChar) #this is for finding the char itself
+                curReadings.add(curChar)  # this is for finding the char itself
                 curIdentifierList.append(curReadings)
             result.append(curIdentifierList)
         return result
@@ -101,33 +130,37 @@ class JapaneseTextAccess:
         newClozeIndex = self._getClozeIndex(self._cleanedClozeDataHira[0], hiraganaClozePos)
         allClozeHints = copy.deepcopy(self._cleanedClozeDataHira[1])
         allClozeHints.insert(newClozeIndex, clozeText)
-        cleanedClozeWithNewPlaceHolder = self._cleanedClozeDataHira[0][:hiraganaClozePos.start]\
-                                         + TextFormatter.clozePlaceholder\
-                                         + self._cleanedClozeDataHira[0][hiraganaClozePos.start + hiraganaClozePos.length:]
+        cleanedClozeWithNewPlaceHolder = (
+            self._cleanedClozeDataHira[0][: hiraganaClozePos.start]
+            + TextFormatter.clozePlaceholder
+            + self._cleanedClozeDataHira[0][hiraganaClozePos.start + hiraganaClozePos.length :]
+        )
         return TextFormatter.replacePlaceholdersWithClozes(cleanedClozeWithNewPlaceHolder, allClozeHints)
 
     def getNewKanjiCloze(self, kanjiClozePos, clozeText):
         newClozeIndex = self._getClozeIndex(self._cleanedClozeDataKanji[0], kanjiClozePos)
         allClozeHints = copy.deepcopy(self._cleanedClozeDataKanji[1])
         allClozeHints.insert(newClozeIndex, clozeText)
-        cleanedClozeWithNewPlaceHolder = self._cleanedClozeDataKanji[0][:kanjiClozePos.start]\
-                                         + TextFormatter.clozePlaceholder\
-                                         + self._cleanedClozeDataKanji[0][kanjiClozePos.start + kanjiClozePos.length:]
+        cleanedClozeWithNewPlaceHolder = (
+            self._cleanedClozeDataKanji[0][: kanjiClozePos.start]
+            + TextFormatter.clozePlaceholder
+            + self._cleanedClozeDataKanji[0][kanjiClozePos.start + kanjiClozePos.length :]
+        )
         return TextFormatter.replacePlaceholdersWithClozes(cleanedClozeWithNewPlaceHolder, allClozeHints)
 
     def _getClozeIndex(self, cleanedClozeString, clozePos):
-        return cleanedClozeString.count(TextFormatter.clozePlaceholder, 0, clozePos.start) #count all placeholders before new cloze position
+        return cleanedClozeString.count(TextFormatter.clozePlaceholder, 0, clozePos.start)  # count all placeholders before new cloze position
 
     def _getWordIndex(self, selectedText):
         if len(self._kanjiToken) != len(self._lemmaToken) or len(self._kanjiToken) != len(self._hiraganaToken):
             return -1
 
-        #This covers native spelling with kanji; kanji trainer must replace the following section:
+        # This covers native spelling with kanji; kanji trainer must replace the following section:
         for idx, curKanjiWord in enumerate(self._kanjiToken):
             if curKanjiWord == selectedText:
                 return idx
 
-        #This covers mixed kana spelling
+        # This covers mixed kana spelling
         selectedTextHira = self._kanaRoumajiTransliterator.mixedRoumajiToHiragana(selectedText)
         regex = KanaTools.createCaseInsensitiveRegex(selectedTextHira)
         for idx, curHiraganaWord in enumerate(self._hiraganaToken):
@@ -146,24 +179,24 @@ class JapaneseTextAccess:
         if len(match) >= 1:
             start = match[0][0]
             length = len(match[0][1])
-            return targetString[start : start+length]
+            return targetString[start : start + length]
 
         raise ValueError("String not found in hiragana")
 
     def getHiraganaTextByMixedKanji(self, hiraganaTargetString, mixedKanjiString):
         result = ClozePosition(0, 0)
 
-        searchPattern = u""
+        searchPattern = ""
         for curChar in mixedKanjiString:
-            searchPattern += u"("
+            searchPattern += "("
             curReadings = self._kanjium.getReadings(curChar)
             for i, curReading in enumerate(curReadings):
                 searchPattern += curReading
-                if i != len(curReadings)-1 :
-                    searchPattern += u"|"
+                if i != len(curReadings) - 1:
+                    searchPattern += "|"
             if len(curReadings) == 0:
                 searchPattern += curChar
-            searchPattern += u")"
+            searchPattern += ")"
 
         matchIter = re.search(searchPattern, hiraganaTargetString)
         if matchIter is None:
@@ -171,7 +204,7 @@ class JapaneseTextAccess:
 
         start = matchIter.start()
         length = len(matchIter.group())
-        return hiraganaTargetString[start:start+length]
+        return hiraganaTargetString[start : start + length]
 
     def findIdentifierInString(self, string, startIdx, identifierSet):
         maxIdx = -1
@@ -195,25 +228,25 @@ class JapaneseTextAccess:
         if len(kanjiIdentifiers) != len(kanjiString):
             raise ValueError(len(kanjiIdentifiers) != len(kanjiString))
 
-        #-----
+        # -----
         # for idx, curIdentifierSet in enumerate(self._kanjiClozeIdentifiers):
         #     curIdentifierString = u""
         #     for curIdentifier in curIdentifierSet:
         #         curIdentifierString += curIdentifier + u", "
         #
         #     print(str(idx) + u" " + self._cleanedClozeDataKanji[0][idx] + u": " + self._transliterator.kanaToRoumaji(curIdentifierString, u"", False, False))
-        #-----
+        # -----
 
         while True:
             if targetIndex >= len(kanjiIdentifiers):
                 raise ValueError("Kanji indices could not be determined")
 
-            curIdentifierSet = kanjiIdentifiers[targetIndex] #set of (multiletter) readings + corresponding kanji OR single other char
+            curIdentifierSet = kanjiIdentifiers[targetIndex]  # set of (multiletter) readings + corresponding kanji OR single other char
             nextSelTextIdx = self.findIdentifierInString(mixedKanjiString, selTextIdx, curIdentifierSet)
 
             if nextSelTextIdx == -1:
                 if clozeStart != -1:
-                    targetIndex = clozeStart+1
+                    targetIndex = clozeStart + 1
                 else:
                     targetIndex += 1
                 selTextIdx = 0
@@ -236,20 +269,20 @@ class JapaneseTextAccess:
                 index = targetText.index(selectedText)
 
                 leftPart = targetText[:index]
-                rightPart = targetText[index + len(selectedText):]
+                rightPart = targetText[index + len(selectedText) :]
 
                 targetToken = targetText.split(JapaneseTextAccess._wordSeparator)
                 sourceToken = selectedText.split(JapaneseTextAccess._wordSeparator)
 
                 startWordIndex = leftPart.count(JapaneseTextAccess._wordSeparator)
                 endWordIndex = startWordIndex + selectedText.count(JapaneseTextAccess._wordSeparator)
-                startWordComplete = targetToken[startWordIndex] == sourceToken[0] #len(leftPart) == 0 or leftPart.endswith(JapaneseTextAccess._wordSeparator)
-                endWordComplete = targetToken[endWordIndex] == sourceToken[-1] #len(rightPart) == 0 or rightPart.startswith(JapaneseTextAccess._wordSeparator)
+                startWordComplete = targetToken[startWordIndex] == sourceToken[0]  # len(leftPart) == 0 or leftPart.endswith(JapaneseTextAccess._wordSeparator)
+                endWordComplete = targetToken[endWordIndex] == sourceToken[-1]  # len(rightPart) == 0 or rightPart.startswith(JapaneseTextAccess._wordSeparator)
 
                 return TextPosition(startWordIndex, endWordIndex, startWordComplete, endWordComplete)
             except:
                 pass
-        raise ValueError(u"selected text not found")
+        raise ValueError("selected text not found")
 
     def checkWordCount(self):
         numWordsHira = self._spacedHiragana.count(JapaneseTextAccess._wordSeparator)
@@ -265,18 +298,18 @@ class JapaneseTextAccess:
         wordCountsEqual &= numWordsHira == numWordsKanaTrainerKata
 
         if not wordCountsEqual:
-            raise Exception(u"Word counts not equal")
+            raise Exception("Word counts not equal")
 
     def getStringForFullWord(self, token, startIndex, endIndex):
         if startIndex > endIndex:
-            return u""
+            return ""
 
-        result = u""
-        for i in range(startIndex, endIndex+1):
-            result += token[i] + u" "
+        result = ""
+        for i in range(startIndex, endIndex + 1):
+            result += token[i] + " "
         if len(result) == 0:
-            raise ValueError(u"Text length == 0")
-        return result[:-1] #remove last whitespace
+            raise ValueError("Text length == 0")
+        return result[:-1]  # remove last whitespace
 
     def getKanaKanjiTextParts(self, searchText, wordIndex):
 
@@ -285,8 +318,8 @@ class JapaneseTextAccess:
         kanjiTargetString = self._kanjiToken[wordIndex]
         kanjiIdentifiers = self._kanjiClozeIdentifiers[wordIndex]
 
-        hiraganaResult = u""
-        kanjiResult = u""
+        hiraganaResult = ""
+        kanjiResult = ""
         try:
             hiraganaResult = self.getHiraganaTextByMixedKana(hiraganaTargetString, selectedTextNoKatakana)
             kanjiResult = self.getKanjiTextByMixedKanji(kanjiIdentifiers, kanjiTargetString, hiraganaResult)
@@ -308,14 +341,14 @@ class JapaneseTextAccess:
     #
     # The lemma is only returned, if a single full word is selected
     def getTextFragments(self, selectedText):
-        selectedText = selectedText.replace(KanjiKanaTransliterator.space, " ") # enables furigana as input text
+        selectedText = selectedText.replace(KanjiKanaTransliterator.space, " ")  # enables furigana as input text
         self.checkWordCount()
 
         selectedText = selectedText.strip()
-        selectedTextToken = selectedText.split(u" ")
+        selectedTextToken = selectedText.split(" ")
         textPositionData = self.getTextPositionData(selectedText)
 
-        hiraganaText = kanjiText = lemmaText = u""
+        hiraganaText = kanjiText = lemmaText = ""
         if textPositionData.startComplete and textPositionData.endComplete:
             hiraganaText = self.getStringForFullWord(self._hiraganaToken, textPositionData.startWordIndex, textPositionData.endWordIndex)
             kanjiText = self.getStringForFullWord(self._kanjiToken, textPositionData.startWordIndex, textPositionData.endWordIndex)
@@ -335,11 +368,11 @@ class JapaneseTextAccess:
 
             startIdx = textPositionData.startWordIndex
             if not textPositionData.startComplete:
-                startIdx+=1
+                startIdx += 1
 
             endIdx = textPositionData.endWordIndex
             if not textPositionData.endComplete:
-                endIdx-=1
+                endIdx -= 1
 
             hiraganaText += self.getStringForFullWord(self._hiraganaToken, startIdx, endIdx)
             kanjiText += self.getStringForFullWord(self._kanjiToken, startIdx, endIdx)
@@ -365,7 +398,9 @@ class JapaneseTextAccess:
 
             if readingAssistanceType == ReadingAssistanceType.latin:
                 if fullWords:
-                    result = self.getStringForFullWord(self._roumaji.split(JapaneseTextAccess._wordSeparator), textPositionData.startWordIndex, textPositionData.endWordIndex)
+                    result = self.getStringForFullWord(
+                        self._roumaji.split(JapaneseTextAccess._wordSeparator), textPositionData.startWordIndex, textPositionData.endWordIndex
+                    )
                 else:
                     result = self._kanaRoumajiTransliterator.kanaToRoumaji(selectedText, "", False, False)
             elif readingAssistanceType == ReadingAssistanceType.none:
@@ -377,17 +412,16 @@ class JapaneseTextAccess:
 
         return result.strip()
 
-
     def getClozePositions(self, selectedText):
         textFragments = self.getTextFragments(selectedText)
 
         hiraganaStartIndex = self._cleanedClozeDataHira[0].find(textFragments[0])
         if hiraganaStartIndex == -1:
-            raise ClozeNotFoundException(u"Hiragana cloze position not found")
+            raise ClozeNotFoundException("Hiragana cloze position not found")
 
-        kanjiStartIndex  = self._cleanedClozeDataKanji[0].find(textFragments[1])
+        kanjiStartIndex = self._cleanedClozeDataKanji[0].find(textFragments[1])
         if kanjiStartIndex == -1:
-            raise ClozeNotFoundException(u"Kanji cloze position not found")
+            raise ClozeNotFoundException("Kanji cloze position not found")
 
         hiraganaClozePos = ClozePosition(hiraganaStartIndex, len(textFragments[0]))
         kanjiClozePos = ClozePosition(kanjiStartIndex, len(textFragments[1]))

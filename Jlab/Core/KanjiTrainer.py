@@ -3,6 +3,7 @@ from Core.KanjiTrainerData import *
 from Core.KanjiTrainerUi import *
 from Core.KanjiTools import *
 
+
 class KanjiTrainer(QDialog):
 
     def __init__(self, kanjiTrainerData):

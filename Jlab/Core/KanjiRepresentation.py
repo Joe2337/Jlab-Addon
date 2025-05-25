@@ -1,9 +1,11 @@
 from Core.LearnedKanji import *
 
+
 # currently not used -> may be used in KanjiKanaTransliterator
 class KanjiRepresentation:
     furiStart = "["
     furiEnd = "]"
+
     def __init__(self):
         self.furigana = ""
         self.jlab = ""

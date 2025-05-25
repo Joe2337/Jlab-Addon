@@ -4,6 +4,7 @@ from AnkiTools.TemplateNames import TemplateNames
 from AnkiTools.CardSearch import *
 from aqt.utils import showInfo
 
+
 class JlabOptions:
 
     @staticmethod
@@ -23,23 +24,23 @@ class JlabOptions:
 
         newDeckNameSet = set(newDeckNameList)
         for curDeck in mw.col.decks.decks.values():
-            curDeckName = curDeck[u"name"]
+            curDeckName = curDeck["name"]
 
             if curDeckName == _("Default") or curDeckName not in newDeckNameSet:
                 continue
 
-            clozeQuery = u"\"deck:" + curDeckName + u"\" card:" + TemplateNames.clozeTemplateName
+            clozeQuery = '"deck:' + curDeckName + '" card:' + TemplateNames.clozeTemplateName
             numClozeCards = len(findCards(mw.col, clozeQuery))
 
-            listeningQuery = u"\"deck:" + curDeckName + u"\" card:" + TemplateNames.listeningTemplateName
+            listeningQuery = '"deck:' + curDeckName + '" card:' + TemplateNames.listeningTemplateName
             numListeningCards = len(findCards(mw.col, listeningQuery))
 
             if numClozeCards != 0 and numListeningCards != 0:
-                curDeck[u"conf"] = pConf
+                curDeck["conf"] = pConf
             elif numClozeCards != 0:
-                curDeck[u"conf"] = cConf
+                curDeck["conf"] = cConf
             elif numListeningCards != 0:
-                curDeck[u"conf"] = lConf
+                curDeck["conf"] = lConf
 
             mw.col.decks.save(curDeck)
 
@@ -58,9 +59,9 @@ class JlabOptions:
     @staticmethod
     def _getConfigId(configName):
         for curItem in mw.col.decks.all_config():
-            if curItem[u"name"] == configName:
+            if curItem["name"] == configName:
                 return curItem["id"]
-        raise ValueError(u"Config not found")
+        raise ValueError("Config not found")
 
     @staticmethod
     def hasListeningConfig():
@@ -77,124 +78,124 @@ class JlabOptions:
     @staticmethod
     def _hasConfig(configName):
         for curConf in mw.col.decks.all_config():
-            if curConf[u"name"] == configName:
+            if curConf["name"] == configName:
                 return True
         return False
 
-    listeningConfigName = u"Jlab-Listening"
-    clozeConfigName = u"Jlab-Cloze"
-    parentConfigName = u"Jlab-Parent" #config name for the parent of the beginner deck
+    listeningConfigName = "Jlab-Listening"
+    clozeConfigName = "Jlab-Cloze"
+    parentConfigName = "Jlab-Parent"  # config name for the parent of the beginner deck
 
     listeningConfig = {
-        u"name": listeningConfigName,
-        u"new": {
-            u"delays": [5, 20],
-            u"ints": [1, 5, 7],  # 7 is not currently used
-            u"initialFactor": 2500,
-            u"separate": True,
-            u"order": 1,
-            u"perDay": 15,
+        "name": listeningConfigName,
+        "new": {
+            "delays": [5, 20],
+            "ints": [1, 5, 7],  # 7 is not currently used
+            "initialFactor": 2500,
+            "separate": True,
+            "order": 1,
+            "perDay": 15,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"lapse": {
-            u"delays": [10],
-            u"mult": 0,
-            u"minInt": 1,
-            u"leechFails": 99,
+        "lapse": {
+            "delays": [10],
+            "mult": 0,
+            "minInt": 1,
+            "leechFails": 99,
             # type 0=suspend, 1=tagonly
-            u"leechAction": 1,
+            "leechAction": 1,
         },
-        u"rev": {
-            u"perDay": 200,
-            u"ease4": 1.4,
-            u"fuzz": 0.05,
-            u"minSpace": 1,  # not currently used
-            u"ivlFct": 1,
-            u"maxIvl": 36500,
+        "rev": {
+            "perDay": 200,
+            "ease4": 1.4,
+            "fuzz": 0.05,
+            "minSpace": 1,  # not currently used
+            "ivlFct": 1,
+            "maxIvl": 36500,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"maxTaken": 600,
-        u"timer": 0,
-        u"autoplay": True,
-        u"replayq": True,
-        u"mod": 0,
-        u"usn": 0,
+        "maxTaken": 600,
+        "timer": 0,
+        "autoplay": True,
+        "replayq": True,
+        "mod": 0,
+        "usn": 0,
     }
 
     clozeConfig = {
-        u"name": clozeConfigName,
-        u"new": {
-            u"delays": [5, 20],
-            u"ints": [1, 5, 7],  # 7 is not currently used
-            u"initialFactor": 2500,
-            u"separate": True,
-            u"order": 1,
-            u"perDay": 15,
+        "name": clozeConfigName,
+        "new": {
+            "delays": [5, 20],
+            "ints": [1, 5, 7],  # 7 is not currently used
+            "initialFactor": 2500,
+            "separate": True,
+            "order": 1,
+            "perDay": 15,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"lapse": {
-            u"delays": [10],
-            u"mult": 0,
-            u"minInt": 1,
-            u"leechFails": 99,
+        "lapse": {
+            "delays": [10],
+            "mult": 0,
+            "minInt": 1,
+            "leechFails": 99,
             # type 0=suspend, 1=tagonly
-            u"leechAction": 1,
+            "leechAction": 1,
         },
-        u"rev": {
-            u"perDay": 200,
-            u"ease4": 1.3,
-            u"fuzz": 0.05,
-            u"minSpace": 1,  # not currently used
-            u"ivlFct": 1,
-            u"maxIvl": 36500,
+        "rev": {
+            "perDay": 200,
+            "ease4": 1.3,
+            "fuzz": 0.05,
+            "minSpace": 1,  # not currently used
+            "ivlFct": 1,
+            "maxIvl": 36500,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"maxTaken": 600,
-        u"timer": 0,
-        u"autoplay": False,
-        u"replayq": True,
-        u"mod": 0,
-        u"usn": 0,
+        "maxTaken": 600,
+        "timer": 0,
+        "autoplay": False,
+        "replayq": True,
+        "mod": 0,
+        "usn": 0,
     }
 
     parentConfig = {
-        u"name": clozeConfigName,
-        u"new": {
-            u"delays": [5, 20],
-            u"ints": [1, 5, 7],  # 7 is not currently used
-            u"initialFactor": 2500,
-            u"separate": True,
-            u"order": 1,
-            u"perDay": 1000,
+        "name": clozeConfigName,
+        "new": {
+            "delays": [5, 20],
+            "ints": [1, 5, 7],  # 7 is not currently used
+            "initialFactor": 2500,
+            "separate": True,
+            "order": 1,
+            "perDay": 1000,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"lapse": {
-            u"delays": [10],
-            u"mult": 0,
-            u"minInt": 1,
-            u"leechFails": 99,
+        "lapse": {
+            "delays": [10],
+            "mult": 0,
+            "minInt": 1,
+            "leechFails": 99,
             # type 0=suspend, 1=tagonly
-            u"leechAction": 1,
+            "leechAction": 1,
         },
-        u"rev": {
-            u"perDay": 200,
-            u"ease4": 1.3,
-            u"fuzz": 0.05,
-            u"minSpace": 1,  # not currently used
-            u"ivlFct": 1,
-            u"maxIvl": 36500,
+        "rev": {
+            "perDay": 200,
+            "ease4": 1.3,
+            "fuzz": 0.05,
+            "minSpace": 1,  # not currently used
+            "ivlFct": 1,
+            "maxIvl": 36500,
             # may not be set on old decks
-            u"bury": True,
+            "bury": True,
         },
-        u"maxTaken": 600,
-        u"timer": 0,
-        u"autoplay": False,
-        u"replayq": True,
-        u"mod": 0,
-        u"usn": 0,
+        "maxTaken": 600,
+        "timer": 0,
+        "autoplay": False,
+        "replayq": True,
+        "mod": 0,
+        "usn": 0,
     }

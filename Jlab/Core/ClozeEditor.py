@@ -4,6 +4,7 @@ from AnkiTools.JapaneseTextAccess import *
 from Core.ReadingAssistanceType import *
 from Core.KanaRoumajiTransliterator import *
 
+
 class ClozeEditor(QDialog):
 
     def __init__(self, japaneseTextAccess, selectedText, learnedHiragana, learnedKatakana, transliterator, jDict, kanjium, readingAssistanceType):
@@ -18,15 +19,15 @@ class ClozeEditor(QDialog):
 
         self._japaneseTextAccess = japaneseTextAccess
 
-        self._kanaQuery = u""
-        self._kanjiQuery = u""
-        self._lemmaQuery = u""
+        self._kanaQuery = ""
+        self._kanjiQuery = ""
+        self._lemmaQuery = ""
         self._initQueryPreselectionStrings(selectedText)
 
         self._ui = Ui_ClozeEditor()
         self._ui.setupUi(self)
         self._ui.searchTermLineEdit.setText(selectedText)
-        self._ui.dictTableWidget.initUI() #this formats the table and overrides changes made by the auto-generated qt code
+        self._ui.dictTableWidget.initUI()  # this formats the table and overrides changes made by the auto-generated qt code
         self._ui.dictTableWidget.setTransliterator(transliterator)
         self._setFontSize(10)
 
@@ -56,18 +57,18 @@ class ClozeEditor(QDialog):
         self._hiraganaClozeResult = japaneseTextAccess.getOriginalHiraganaCloze()
         self._kanjiClozeResult = japaneseTextAccess.getOriginalKanjiCloze()
         self._searchResults = []
-        self._lookedUpReadings = u""
-        self._lookedUpExpression = u""
+        self._lookedUpReadings = ""
+        self._lookedUpExpression = ""
 
-        #this will keep the selection in the debug views highlighed, together with the re-selection in the event filter
+        # this will keep the selection in the debug views highlighed, together with the re-selection in the event filter
         palette = QPalette()
         palette.setColor(QPalette.ColorRole.Highlight, QColor("#3a7fc2"))
         palette.setColor(QPalette.ColorRole.HighlightedText, QColor("white"))
         self._ui.kanaDebugLineEdit.setPalette(palette)
         self._ui.kanjiDebugLineEdit.setPalette(palette)
 
-        QTimer.singleShot(1, lambda : self.search()) #without delayed search the table is not correctly formatted
-        QTimer.singleShot(100, lambda: self.updateClozePositions(selectedText)) #without delay, the selection is not updated
+        QTimer.singleShot(1, lambda: self.search())  # without delayed search the table is not correctly formatted
+        QTimer.singleShot(100, lambda: self.updateClozePositions(selectedText))  # without delay, the selection is not updated
         QTimer.singleShot(110, lambda: self._updateClozePreview())
 
     def _setFontSize(self, fontSize):
@@ -87,9 +88,9 @@ class ClozeEditor(QDialog):
     def _initQueryPreselectionStrings(self, selectedText):
         try:
             kanaKanjiLemma = self._japaneseTextAccess.getTextFragments(selectedText)
-            self._kanaQuery = kanaKanjiLemma[0].replace(u" ", u"")
-            self._kanjiQuery = kanaKanjiLemma[1].replace(u" ", u"")
-            self._lemmaQuery = kanaKanjiLemma[2].replace(u" ", u"")
+            self._kanaQuery = kanaKanjiLemma[0].replace(" ", "")
+            self._kanjiQuery = kanaKanjiLemma[1].replace(" ", "")
+            self._lemmaQuery = kanaKanjiLemma[2].replace(" ", "")
         except Exception:
             return
 
@@ -169,9 +170,9 @@ class ClozeEditor(QDialog):
         except:
             return
         if self._readingAssistanceType == ReadingAssistanceType.latin:
-            self._ui.clozePreviewTextEdit.setText(self._transliterator.kanaToRoumaji(self._hiraganaClozeResult, u"", False, False))
+            self._ui.clozePreviewTextEdit.setText(self._transliterator.kanaToRoumaji(self._hiraganaClozeResult, "", False, False))
         elif self._readingAssistanceType == ReadingAssistanceType.kanaTrainer:
-            self._ui.clozePreviewTextEdit.setText(self._transliterator.kanaToRoumaji(self._hiraganaClozeResult, u"", False, True))
+            self._ui.clozePreviewTextEdit.setText(self._transliterator.kanaToRoumaji(self._hiraganaClozeResult, "", False, True))
         elif self._readingAssistanceType == ReadingAssistanceType.none:
             self._ui.clozePreviewTextEdit.setText(self._kanjiClozeResult)
         else:
@@ -185,9 +186,9 @@ class ClozeEditor(QDialog):
 
     def _getReadingAssistanceString(self, input):
         if len(input) == 0:
-            return u""
+            return ""
         else:
-            return u"  (" + input + u")"
+            return "  (" + input + ")"
 
         # if self._readingAssistanceType == ReadingAssistanceType._none:
         #     return u"  (" + input + u")"
@@ -204,11 +205,11 @@ class ClozeEditor(QDialog):
         self._ui.lemmaLabel.setText(self._getReadingAssistanceString(self._lemmaQuery))
 
     def initClozeSelectionLineEdit(self):
-        #this is rather for debugging purpose and could possibly be deleted later.
+        # this is rather for debugging purpose and could possibly be deleted later.
         if self._readingAssistanceType == ReadingAssistanceType.latin:
-            self._ui.clozeSelectionLineEdit.setText(self._transliterator.kanaToRoumaji(self._japaneseTextAccess.getCleanedHiraganaCloze(), u"", False, False))
+            self._ui.clozeSelectionLineEdit.setText(self._transliterator.kanaToRoumaji(self._japaneseTextAccess.getCleanedHiraganaCloze(), "", False, False))
         elif self._readingAssistanceType == ReadingAssistanceType.kanaTrainer:
-            self._ui.clozeSelectionLineEdit.setText(self._transliterator.kanaToRoumaji(self._japaneseTextAccess.getCleanedHiraganaCloze(), u"", False, True))
+            self._ui.clozeSelectionLineEdit.setText(self._transliterator.kanaToRoumaji(self._japaneseTextAccess.getCleanedHiraganaCloze(), "", False, True))
         elif self._readingAssistanceType == ReadingAssistanceType.none or self._readingAssistanceType == ReadingAssistanceType.kanjiTrainer:
             self._ui.clozeSelectionLineEdit.setText(self._japaneseTextAccess.getCleanedKanjiCloze())
         else:
@@ -261,7 +262,7 @@ class ClozeEditor(QDialog):
                 self._ui.kanaRadioButton.setChecked(True)
 
     def searchEdited(self):
-        #With Qt5, use QSignalBlocker
+        # With Qt5, use QSignalBlocker
         self._ui.lemmaRadioButton.blockSignals(True)
         self._ui.kanjiRadioButton.blockSignals(True)
         self._ui.kanaRadioButton.blockSignals(True)
@@ -307,8 +308,3 @@ class ClozeEditor(QDialog):
         if self._ui.kanaRadioButton.isEnabled():
             self._ui.searchTermLineEdit.setText(self._kanaQuery)
             self.search()
-
-
-
-
-

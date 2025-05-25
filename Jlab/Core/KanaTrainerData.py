@@ -1,6 +1,7 @@
 from Core.LearnedKana import *
 from Core.KanaTools import *
 
+
 class KanaTrainerData(IStorable):
     def __init__(self):
         self.version = 0
@@ -17,22 +18,22 @@ class KanaTrainerData(IStorable):
 
     def toDictionary(self):
         return {
-            u"version" : self.getVersion(),
-            u"identifier" : self.getIdentifier(),
-            u"learnedHiragana" : self.learnedHiragana.toDictionary(),
-            u"learnedKatakana" : self.learnedKatakana.toDictionary(),
-            u"kanaType" : self.kanaType,
-            u"showOppositeKana" : self.showOppositeKana,
-            u"oppositeKanaStepSize" : self.oppositeKanaStepSize
+            "version": self.getVersion(),
+            "identifier": self.getIdentifier(),
+            "learnedHiragana": self.learnedHiragana.toDictionary(),
+            "learnedKatakana": self.learnedKatakana.toDictionary(),
+            "kanaType": self.kanaType,
+            "showOppositeKana": self.showOppositeKana,
+            "oppositeKanaStepSize": self.oppositeKanaStepSize,
         }
 
     def fromDictionary(self, dictionary):
-        version = dictionary[u"version"]
-        self.learnedHiragana.fromDictionary(dictionary[u"learnedHiragana"])
-        self.learnedKatakana.fromDictionary(dictionary[u"learnedKatakana"])
-        self.kanaType = dictionary[u"kanaType"]
-        self.showOppositeKana = dictionary[u"showOppositeKana"]
-        self.oppositeKanaStepSize = dictionary[u"oppositeKanaStepSize"]
+        version = dictionary["version"]
+        self.learnedHiragana.fromDictionary(dictionary["learnedHiragana"])
+        self.learnedKatakana.fromDictionary(dictionary["learnedKatakana"])
+        self.kanaType = dictionary["kanaType"]
+        self.showOppositeKana = dictionary["showOppositeKana"]
+        self.oppositeKanaStepSize = dictionary["oppositeKanaStepSize"]
 
     def getKanaTypeForDisplay(self, index):
         otherKana = KanaType.hiragana if self.kanaType == KanaType.katakana else KanaType.katakana
