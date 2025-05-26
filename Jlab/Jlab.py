@@ -505,11 +505,14 @@ def showJlabTools():
     googleForGrammarAction = m.addAction("google for grammar (use kana / kanji)")
     googleForGrammarAction.triggered.connect(lambda: WebSearch.googleForGrammar(selectedText))
 
-    verbixDeinflect = m.addAction("Verbix deinflection")
-    verbixDeinflect.triggered.connect(lambda: WebSearch.verbixDeinflect(roumaji))
-
-    verbixConjugate = m.addAction("Verbix conjugate")
+    verbixConjugate = m.addAction("Verbix conjugate (use lemma)")
     verbixConjugate.triggered.connect(lambda: WebSearch.verbixConjugate(selectedText))
+
+    japaneseVerbConjugator = m.addAction("Japanese verb conjugator (use lemma)")
+    japaneseVerbConjugator.triggered.connect(lambda: WebSearch.japaneseVerbConjugator(selectedText))
+
+    jishoLookup = m.addAction("Jisho lookup (use anything)")
+    jishoLookup.triggered.connect(lambda: WebSearch.jishoLookup(selectedText))
 
     m.popup(QCursor.pos())
 

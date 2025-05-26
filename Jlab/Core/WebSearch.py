@@ -17,13 +17,6 @@ class WebSearch:
         WebSearch.openUrl(url)
 
     @staticmethod
-    def jgram(input):
-        urlPrefix = "http://www.jgram.org/pages/viewList.php?s="
-        urlSuffix = "&search.x=0&search.y=0"
-        url = urlPrefix + input + urlSuffix
-        WebSearch.openUrl(url)
-
-    @staticmethod
     def verbixConjugate(input):
         urlPrefix = "https://www.verbix.com/webverbix/Japanese/"
         urlSuffix = ""
@@ -31,8 +24,15 @@ class WebSearch:
         WebSearch.openUrl(url)
 
     @staticmethod
-    def verbixDeinflect(input):
-        urlPrefix = "https://www.verbix.com/find-verb/"
+    def japaneseVerbConjugator(input):
+        urlPrefix = "https://www.japaneseverbconjugator.com/VerbDetails.asp?txtVerb="
+        urlSuffix = "&Go=Conjugate"
+        url = urlPrefix + urllib.parse.quote(input) + urlSuffix
+        WebSearch.openUrl(url)
+
+    @staticmethod
+    def jishoLookup(input):
+        urlPrefix = "https://jisho.org/search/"
         urlSuffix = ""
         url = urlPrefix + urllib.parse.quote(input) + urlSuffix
         WebSearch.openUrl(url)

@@ -146,7 +146,7 @@ def testWebsearch():
     time.sleep(2)
     WebSearch.verbixConjugate("食べる")
     time.sleep(2)
-    WebSearch.verbixDeinflect("tabemasu")
+    WebSearch.jishoLookup("tabemasu")
 
 
 def writeUpdateInfo():
